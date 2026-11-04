@@ -1,0 +1,54 @@
+METODO DE SUPERFICIE DE RESPUESTA - PISO RADIANTE (GNU Octave)
+Referencia: Montgomery, "Diseno y Analisis de Experimentos"
+=====================================================================
+
+CONTENIDO
+  superficie_respuesta.m     Script principal (procedimiento de la pizarra)
+  datos/datos_MSR.csv        Datos que lee el script (945 registros)
+  datos/datos_MSR.xlsx       Mismos datos + variables codificadas + hoja de codificacion
+  datos/HORARIOS_DATOS_CONSISTEMA_2_semanas.xlsx   Excel original (fuente)
+  resultados/resultados.txt  Coeficientes, ANOVA, punto estacionario
+  figuras/                   Superficie, contorno, observado vs predicho, residuos
+
+VARIABLES
+  x1 = Temperatura de entrada del agua al piso (C)
+  x2 = Temperatura del aire exterior (C)
+  y  = Temperatura operativa interior (C)
+  Se usaron las 2 semanas (11/09 al 25/09/2026), solo registros con el
+  sistema en funcionamiento (con temperatura de agua registrada).
+
+COMO EJECUTAR
+  1. Instalar GNU Octave (https://octave.org/download). No necesita paquetes extra.
+  2. Descomprimir esta carpeta.
+  3. Abrir Octave -> en el "Explorador de archivos" ir a esta carpeta
+     (o escribir:  cd 'C:\ruta\MSR_PisoRadiante_Octave').
+  4. Escribir:  superficie_respuesta
+  5. Se regeneran resultados/resultados.txt y las figuras en figuras/.
+  Si algun grafico da error, ejecutar antes:  graphics_toolkit qt
+
+PASOS DEL SCRIPT (igual que la pizarra)
+  1) Leer datos reales
+  2) Codificar:  x = (T - centro) / (DeltaT/2)
+  3) Matriz X = [1 x1 x2 x1^2 x2^2 x1*x2]  ->  coeficientes = X\y
+  4) Forma matricial  y = b0 + x'b + x'Bx,  B = [b11 b12/2; b12/2 b22]
+  5) Punto estacionario  xs = -1/2 * inv(B) * b,  ys = b0 + 1/2 * xs'*b
+  6) Eigenvalores de B -> maximo / minimo / punto silla
+  7) Decodificar:  T = centro + (DeltaT/2) * x
+  8) Mejor condicion dentro de la region experimental
+  9) Graficos
+
+RESULTADOS PRINCIPALES
+  Modelo: y = 13.3922 + 1.9785 x1 + 4.0837 x2 - 0.1670 x1^2
+              + 0.5762 x2^2 - 0.5793 x1x2
+  R^2 = 0.852   (F = 1084.2, p < 0.001)
+  b11 (x1^2) no es significativo (p = 0.194); los demas terminos si (p < 0.001)
+  Punto estacionario: x1 = 6.45, x2 = -0.30  -> PUNTO SILLA (eig = -0.267, 0.676)
+  Esta fuera de la region medida (T entrada = 146.7 C), no es un optimo real.
+  Mejor condicion dentro de la region: T entrada = 48.1 C, T exterior = 15.3 C
+  -> T operativa estimada = 19.3 C
+
+INTERPRETACION
+  No existe un maximo dentro de la region estudiada: la temperatura
+  operativa interior aumenta al subir la temperatura de entrada del agua
+  y con exterior mas templado. El efecto mas fuerte es el de la
+  temperatura exterior (b2 = 4.08) seguido del agua (b1 = 1.98).

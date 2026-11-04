@@ -1,0 +1,608 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe de investigación – MSR piso radiante</title>
+<link rel="stylesheet" href="estilos.css"><style>
+body { font-size:11pt; line-height:1.5; }
+.cover { height:250mm; display:flex; flex-direction:column; align-items:center; text-align:center; break-after:page; border:1.5px solid var(--accent); outline:4px solid #fff; box-shadow:0 0 0 5.5px var(--accent); padding:22mm 16mm 14mm; }
+.cover .k { font-family:"Liberation Sans",Arial,sans-serif; letter-spacing:.18em; text-transform:uppercase; font-size:10pt; color:var(--muted); }
+.cover h1 { font-size:19pt; line-height:1.25; margin:16mm 0 6mm; color:#111; text-align:center; }
+.cover .sub { font-family:"Liberation Sans",Arial,sans-serif; font-size:12pt; color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.cover .rule { width:60mm; height:2px; background:var(--accent); margin:9mm auto; }
+.cover table { width:auto; font-size:11pt; margin:0 auto; }
+.cover td { text-align:left; padding:3px 8px; border:none !important; vertical-align:top; }
+.cover td.h { font-family:"Liberation Sans",Arial,sans-serif; font-weight:700; color:var(--accent); white-space:nowrap; }
+.cover .foot { margin-top:auto; font-family:"Liberation Sans",Arial,sans-serif; font-size:11pt; color:var(--muted); }
+h2.s { font-size:14pt; border-bottom:1.5px solid var(--accent); padding-bottom:3px; margin:0 0 10px; break-before:page; text-transform:uppercase; letter-spacing:.02em; }
+h3 { font-size:11.5pt; margin:14px 0 6px; }
+h4 { font-size:10.5pt; margin:10px 0 4px; color:#2d3748; }
+.toc ul { list-style:none; padding:0; margin:0; }
+.toc li a { display:flex; color:var(--ink); text-decoration:none; padding:4px 0; border-bottom:1px dotted #b8c2cc; }
+.toc li a span:first-child { flex:1; }
+ul.b, ol.b { margin:.2em 0 .7em 1.2em; padding-left:.6em; }
+ul.b li, ol.b li { margin-bottom:.25em; }
+table { font-size:9.3pt; }
+.mc td, .mc th { font-size:7.6pt; vertical-align:top; text-align:left; border:.6px solid #9aa5b1; padding:4px 5px; line-height:1.3; }
+.mc thead th { background:var(--soft); }
+.mc th:nth-child(1),.mc th:nth-child(2),.mc th:nth-child(3) { width:22%; } .mc th:nth-child(4) { width:12%; }
+</style></head><body>
+
+<section class="cover">
+<div class="k">Curso: Metodología de la Investigación</div>
+<h1>MODELADO DE LA TEMPERATURA OPERATIVA INTERIOR DE UN SISTEMA DE CALEFACCIÓN POR PISO RADIANTE MEDIANTE METODOLOGÍA DE SUPERFICIE DE RESPUESTA</h1>
+<div class="sub">Informe de investigación</div>
+<div class="rule"></div>
+<table>
+<tr><td class="h">Integrantes:</td><td>RENZO GABRIEL MAMANI GALINDO<br>AQUILES TAYLOR RAMOS YAPO</td></tr>
+<tr><td class="h">Docente asesor:</td><td>Ing. MATEO ALEJANDRO SALINAS MENA</td></tr>
+<tr><td class="h">Condición y categoría:</td><td>Nombrado</td></tr>
+<tr><td class="h">Especialidad:</td><td>Ingeniero Mecánico Electricista</td></tr>
+<tr><td class="h">Período de medición:</td><td>11 al 25 de septiembre de 2026</td></tr>
+</table>
+<div class="foot">Noviembre de 2026</div>
+</section>
+
+<section class="toc"><h2 class="s" style="break-before:auto">Índice</h2><ul><li><a href="#res"><span>Resumen</span><span class="pg" data-target="res">3</span></a></li><li><a href="#s1"><span>I. Introducción</span><span class="pg" data-target="s1">4</span></a></li><li><a href="#s2"><span>II. Planteamiento del problema</span><span class="pg" data-target="s2">5</span></a></li><li><a href="#s3"><span>III. Objetivos</span><span class="pg" data-target="s3">6</span></a></li><li><a href="#s4"><span>IV. Hipótesis y variables</span><span class="pg" data-target="s4">7</span></a></li><li><a href="#s5"><span>V. Marco teórico</span><span class="pg" data-target="s5">8</span></a></li><li><a href="#s6"><span>VI. Metodología</span><span class="pg" data-target="s6">9</span></a></li><li><a href="#s7"><span>VII. Resultados</span><span class="pg" data-target="s7">11</span></a></li><li><a href="#s8"><span>VIII. Discusión</span><span class="pg" data-target="s8">17</span></a></li><li><a href="#s9"><span>IX. Conclusiones</span><span class="pg" data-target="s9">18</span></a></li><li><a href="#s10"><span>X. Recomendaciones</span><span class="pg" data-target="s10">19</span></a></li><li><a href="#ref"><span>Referencias</span><span class="pg" data-target="ref">20</span></a></li><li><a href="#aA"><span>Anexo A. Matriz de consistencia</span><span class="pg" data-target="aA">21</span></a></li><li><a href="#aB"><span>Anexo B. Código fuente en GNU Octave</span><span class="pg" data-target="aB">22</span></a></li><li><a href="#aC"><span>Anexo C. Salida de resultados</span><span class="pg" data-target="aC">25</span></a></li></ul>
+<h3>Índice de tablas y figuras</h3>
+<p style="font-size:9.5pt;text-align:left">Tabla 1. Operacionalización de variables · Tabla 2. Instrumentos · Tabla 3. Codificación de factores · Tabla 4. Estadística
+descriptiva · Tabla 5. Resultados por franja horaria · Tabla 6. Coeficientes del modelo · Tabla 7. ANOVA · Tabla 8. Análisis canónico · Tabla 9.
+Diagnóstico de supuestos · Tabla 10. Contraste de hipótesis.<br>Figura 1. Distribución por franja horaria · Figura 2. Superficie de respuesta ·
+Figura 3. Contornos · Figura 4. Observado vs. predicho · Figura 5. Residuos · Figura 6. Interacción.</p></section>
+
+<h2 class="s" id="res">Resumen</h2>
+<p>Los sistemas de calefacción por piso radiante son una alternativa eficiente para climatizar viviendas en zonas
+de clima frío, pero su desempeño depende de la temperatura del agua de impulsión y de las condiciones exteriores. Este estudio
+modeló la temperatura operativa interior (<i>T</i><sub>op</sub>) de un ambiente calefaccionado por piso radiante en función de la
+temperatura de entrada del agua (<i>T</i><sub>w</sub>) y de la temperatura del aire exterior (<i>T</i><sub>e</sub>) mediante la
+metodología de superficie de respuesta (MSR). Se registraron 945 observaciones con el sistema en funcionamiento durante dos
+semanas (11 al 25 de septiembre de 2026) en tres franjas diarias, con termómetro de globo y sensores de temperatura. Se ajustó un
+modelo polinomial de segundo orden en variables codificadas por mínimos cuadrados, se evaluó con ANOVA y se realizó el análisis
+canónico. El modelo explicó el 85.2 % de la variabilidad (<i>F</i> = 1084.2; <i>p</i> &lt; 0.001; RMSE =
+0.99 °C; <i>R</i><sup>2</sup><sub>pred</sub> = 0.850). Ambos efectos lineales, el término cuadrático de
+<i>T</i><sub>e</sub> y la interacción fueron significativos; la curvatura en <i>T</i><sub>w</sub> no lo fue (<i>p</i> = 0.194).
+La temperatura exterior fue el factor dominante (<i>β</i><sub>2</sub> = 4.08) frente a la del agua (<i>β</i><sub>1</sub> = 1.98),
+y la interacción negativa indica que el agua caliente es más eficaz en condiciones más frías. El punto estacionario resultó un punto
+silla fuera de la región experimental, por lo que la mejor condición se ubica en la frontera: <i>T</i><sub>w</sub> = 48.1 °C y
+<i>T</i><sub>e</sub> = 15.3 °C, con <i>T</i><sub>op</sub> estimada de 19.3 °C, todavía por debajo del umbral
+invernal de confort de 20 °C. Se concluye que el sistema, en su configuración actual, requiere mayor aporte térmico o mejoras en
+la envolvente para alcanzar condiciones de confort.</p><p><b>Palabras clave:</b> piso radiante; temperatura operativa; metodología de superficie de respuesta; confort térmico; calefacción hidrónica; análisis canónico.</p>
+<h3>Abstract</h3><p><i>Radiant floor heating systems are an efficient option for space heating in cold climates, but their performance depends on
+supply water temperature and outdoor conditions. This study modelled the indoor operative temperature (<i>T</i><sub>op</sub>) of a room heated
+by a radiant floor as a function of the supply water temperature (<i>T</i><sub>w</sub>) and the outdoor air temperature (<i>T</i><sub>e</sub>)
+using response surface methodology (RSM). A total of 945 observations were recorded with the system in operation over two weeks
+(11–25 September 2026) in three daily time windows using a globe thermometer and temperature sensors. A second-order polynomial model in
+coded variables was fitted by least squares, assessed through ANOVA and analysed canonically. The model explained 85.2 % of the
+variance (<i>F</i> = 1084.2; <i>p</i> &lt; 0.001; RMSE = 0.99 °C; predicted <i>R</i><sup>2</sup> = 0.850). Both linear
+effects, the quadratic term of <i>T</i><sub>e</sub> and the interaction were significant, whereas curvature in <i>T</i><sub>w</sub> was not
+(<i>p</i> = 0.194). Outdoor temperature was the dominant factor (<i>β</i><sub>2</sub> = 4.08) compared with water temperature
+(<i>β</i><sub>1</sub> = 1.98), and the negative interaction shows that hot water is more effective under colder conditions. The stationary
+point was a saddle point outside the experimental region; hence the best condition lies on the boundary (<i>T</i><sub>w</sub> = 48.1 °C,
+<i>T</i><sub>e</sub> = 15.3 °C), giving an estimated <i>T</i><sub>op</sub> of 19.3 °C, still below the 20 °C winter comfort
+threshold. The system, as currently configured, requires greater heat input or envelope improvements to achieve thermal comfort.</i></p><p><b>Keywords:</b> radiant floor heating; operative temperature; response surface methodology; thermal comfort; hydronic heating; canonical analysis.</p>
+
+<h2 class="s" id="s1">I. Introducción</h2><p>La calefacción de espacios en zonas de clima frío representa una fracción importante del consumo energético de las
+edificaciones y condiciona directamente la salud y el bienestar de sus ocupantes. Entre las tecnologías disponibles, los sistemas
+hidrónicos de piso radiante destacan por distribuir el calor de forma uniforme, operar con temperaturas de agua moderadas y
+favorecer el intercambio radiante con los ocupantes, lo que permite alcanzar sensaciones de confort con temperaturas de aire
+menores que los sistemas convectivos (Olesen, 2002; Babiak et al., 2007). Una revisión de cinco décadas de investigación confirma
+su potencial de ahorro energético y su compatibilidad con fuentes de baja temperatura (Rhee &amp; Kim, 2015).</p>
+<p>El desempeño de estos sistemas suele evaluarse mediante la temperatura operativa (<i>T</i><sub>op</sub>), magnitud que combina la
+temperatura del aire y la temperatura radiante media y que constituye la base de los criterios de confort de ISO 7730 (2005) y
+ASHRAE 55 (2020), derivados del modelo de Fanger (1970). Las normas de diseño de sistemas radiantes embebidos, como ISO 11855-1
+(2021), establecen además límites para la temperatura superficial del piso que restringen la temperatura de impulsión del agua.</p>
+<p>En la práctica, la <i>T</i><sub>op</sub> alcanzada depende simultáneamente de variables controlables, como la temperatura de entrada
+del agua (<i>T</i><sub>w</sub>), y de variables no controlables, como la temperatura del aire exterior (<i>T</i><sub>e</sub>), cuyas
+relaciones pueden ser no lineales y presentar interacción. La metodología de superficie de respuesta (MSR), introducida por Box y
+Wilson (1951) y sistematizada por Myers et al. (2016) y Montgomery (2017), permite aproximar estas relaciones mediante polinomios de
+segundo orden, identificar puntos estacionarios y caracterizar la región de operación favorable; su aplicación se ha extendido a la
+optimización de procesos en múltiples disciplinas (Bezerra et al., 2008).</p>
+<p>Pese a ello, son escasos los estudios que aplican la MSR a datos de campo de sistemas de piso radiante operando en condiciones
+reales de clima frío, con amplias oscilaciones térmicas diarias. El objetivo de esta investigación fue modelar la temperatura
+operativa interior de un ambiente calefaccionado por piso radiante en función de la temperatura de entrada del agua y de la
+temperatura exterior mediante la MSR, determinar la naturaleza del punto estacionario y estimar la mejor condición de operación
+dentro de la región observada.</p>
+<p>El presente informe se organiza de la siguiente manera: el capítulo II plantea el problema; los capítulos III y IV presentan los objetivos,
+las hipótesis y las variables; el capítulo V desarrolla el marco teórico; el VI describe la metodología; el VII expone los resultados; el VIII
+los discute, y los capítulos IX y X presentan las conclusiones y recomendaciones.</p>
+
+<h2 class="s" id="s2">II. Planteamiento del problema</h2>
+<h3>2.1. Descripción de la realidad problemática</h3>
+<p>En las zonas de clima frío, las viviendas y ambientes de trabajo registran temperaturas interiores bajas durante gran parte del año, en especial
+en las primeras horas de la mañana, cuando la temperatura exterior desciende por debajo de 0 °C. Esta condición afecta el confort, la salud y la
+productividad de los ocupantes. Los sistemas de piso radiante son una alternativa técnica para mejorar el ambiente interior; sin embargo, su
+operación suele basarse en ajustes empíricos de la temperatura del agua sin conocer cuantitativamente cómo esta variable, junto con la temperatura
+exterior, determina la temperatura operativa que perciben los ocupantes. Esta falta de un modelo cuantitativo impide establecer condiciones de
+operación adecuadas y evaluar si el sistema es capaz de alcanzar el confort térmico.</p>
+<h3>2.2. Formulación del problema</h3>
+<h4>Problema general</h4>
+<p>¿Cómo influyen la temperatura de entrada del agua y la temperatura del aire exterior en la temperatura operativa interior de un ambiente
+calefaccionado por piso radiante, modelada mediante la metodología de superficie de respuesta?</p>
+<h4>Problemas específicos</h4>
+<ol class="b"><li>¿Cuál es el efecto lineal, cuadrático y de interacción de la temperatura de entrada del agua y de la temperatura exterior sobre la temperatura operativa interior?</li>
+<li>¿Qué naturaleza tiene el punto estacionario de la superficie de respuesta y se ubica dentro de la región experimental?</li>
+<li>¿Cuál es la mejor condición de operación dentro de la región estudiada y permite alcanzar el confort térmico?</li></ol>
+<h3>2.3. Justificación</h3>
+<p><b>Técnica:</b> el modelo permite predecir la temperatura operativa a partir de variables medibles y orientar la regulación de la caldera.
+<b>Económica:</b> conocer el efecto marginal de la temperatura del agua evita sobrecalentamientos innecesarios y el consumo excesivo de combustible.
+<b>Social:</b> contribuye a mejorar las condiciones de confort y salud en ambientes de clima frío. <b>Metodológica:</b> muestra la aplicación de la MSR
+(Montgomery, 2017) a datos de campo, incluido el análisis canónico y la verificación de supuestos.</p>
+<h3>2.4. Delimitación</h3>
+<p><b>Espacial:</b> un ambiente experimental con sistema hidrónico de piso radiante. <b>Temporal:</b> 11 al 25 de septiembre de 2026, en tres franjas diarias.
+<b>Conceptual:</b> se estudian dos factores (<i>T</i><sub>w</sub>, <i>T</i><sub>e</sub>) y una respuesta (<i>T</i><sub>op</sub>).</p>
+
+<h2 class="s" id="s3">III. Objetivos</h2>
+<h3>3.1. Objetivo general</h3>
+<p>Modelar la temperatura operativa interior de un ambiente calefaccionado por piso radiante en función de la temperatura de entrada del agua y de la
+temperatura del aire exterior mediante la metodología de superficie de respuesta.</p>
+<h3>3.2. Objetivos específicos</h3>
+<ol class="b"><li>Estimar y evaluar estadísticamente los efectos lineales, cuadráticos y de interacción de un modelo de segundo orden.</li>
+<li>Determinar la ubicación y la naturaleza del punto estacionario mediante el análisis canónico.</li>
+<li>Identificar la mejor condición de operación dentro de la región experimental y contrastarla con los criterios de confort térmico.</li></ol>
+
+<h2 class="s" id="s4">IV. Hipótesis y variables</h2>
+<h3>4.1. Hipótesis general</h3>
+<p>La temperatura de entrada del agua y la temperatura del aire exterior influyen significativamente en la temperatura operativa interior, y dicha
+relación puede representarse adecuadamente mediante un modelo de superficie de respuesta de segundo orden.</p>
+<h3>4.2. Hipótesis específicas</h3>
+<ol class="b"><li>H<sub>E1</sub>: al menos un término lineal, cuadrático o de interacción del modelo es significativo (H<sub>0</sub>: <i>β</i><sub>1</sub> = <i>β</i><sub>2</sub> = <i>β</i><sub>11</sub> = <i>β</i><sub>22</sub> = <i>β</i><sub>12</sub> = 0).</li>
+<li>H<sub>E2</sub>: la superficie de respuesta presenta un punto estacionario de tipo máximo dentro de la región experimental.</li>
+<li>H<sub>E3</sub>: existe una condición de operación dentro de la región experimental que permite alcanzar una temperatura operativa de al menos 20 °C.</li></ol>
+<h3>4.3. Operacionalización de variables</h3>
+<div class="tbl"><p class="cap"><b>Tabla 1.</b> Operacionalización de variables.</p>
+<table><thead><tr><th class='l'>Variable</th><th class='l'>Tipo</th><th class='l'>Definición operacional</th><th class='l'>Indicador / unidad</th><th class='l'>Escala</th></tr></thead><tbody>
+<tr><td class='l'>Temperatura de entrada del agua (<i>T</i><sub>w</sub>)</td><td class='l'>Independiente (controlable)</td><td class='l'>Temperatura del agua al ingresar al circuito del piso</td><td class='l'>°C; codificada <i>x</i><sub>1</sub></td><td class='l'>Razón</td></tr>
+<tr><td class='l'>Temperatura del aire exterior (<i>T</i><sub>e</sub>)</td><td class='l'>Independiente (ambiental)</td><td class='l'>Temperatura del aire medida con termohigrómetro exterior</td><td class='l'>°C; codificada <i>x</i><sub>2</sub></td><td class='l'>Intervalo</td></tr>
+<tr><td class='l'>Temperatura operativa interior (<i>T</i><sub>op</sub>)</td><td class='l'>Dependiente</td><td class='l'>Media de la T del aire y la T radiante en el interior</td><td class='l'>°C</td><td class='l'>Intervalo</td></tr>
+</tbody></table></div>
+
+<h2 class="s" id="s5">V. Marco teórico</h2>
+<h3>5.1. Antecedentes</h3>
+<p>Box y Wilson (1951) propusieron la metodología de superficie de respuesta para alcanzar experimentalmente condiciones óptimas mediante polinomios
+de primer y segundo orden, base de la teoría desarrollada posteriormente por Myers et al. (2016). Bezerra et al. (2008) describen su aplicación
+sistemática en la optimización de procesos, incluido el uso del análisis canónico. En el campo de los sistemas radiantes, Olesen (2002) analizó los
+fundamentos y la práctica de la calefacción por piso radiante, y Babiak et al. (2007) establecieron criterios de diseño para sistemas de calefacción de
+baja temperatura. Rhee y Kim (2015) revisaron cincuenta años de investigación en calefacción y refrigeración radiante, destacando la necesidad de estudios
+de campo que vinculen las variables de operación con el confort.</p>
+<h3>5.2. Bases teóricas</h3>
+<h4>a) Calefacción por piso radiante</h4>
+<p>Es un sistema hidrónico en el que el agua calentada por una caldera circula por tuberías embebidas en la losa del piso. El calor se transmite por
+conducción a la superficie del piso y desde esta al ambiente por radiación (≈ 60 %) y convección. La temperatura superficial del piso se limita, por
+confort de los pies, a un máximo del orden de 29 °C en zonas ocupadas (ISO 11855-1, 2021).</p>
+<h4>b) Temperatura operativa y confort térmico</h4>
+<p>La temperatura operativa es la temperatura uniforme de un recinto negro imaginario en el que un ocupante intercambiaría la misma cantidad de calor por
+radiación y convección que en el ambiente real. Para velocidades del aire bajas (&lt; 0.2 m/s) se aproxima como la media de la temperatura del aire y la
+temperatura radiante media (ISO 7730, 2005). Las normas ISO 7730 y ASHRAE 55 (2020), basadas en el modelo de Fanger (1970), recomiendan en invierno
+temperaturas operativas de aproximadamente 20 a 24 °C para actividad sedentaria.</p>
+<h4>c) Metodología de superficie de respuesta</h4>
+<p>Conjunto de técnicas matemáticas y estadísticas para modelar y analizar problemas en los que una respuesta depende de varias variables, con el
+objetivo de optimizarla (Montgomery, 2017). El modelo de segundo orden permite representar curvatura e interacción; el análisis canónico, mediante los
+valores propios de la matriz <b>B</b>, determina si el punto estacionario es un máximo, un mínimo o un punto silla (Myers et al., 2016).</p>
+<h3>5.3. Definición de términos</h3>
+<ul class="b"><li><b>Factor codificado:</b> variable transformada al intervalo [−1, 1] para comparar efectos en una misma escala.</li>
+<li><b>Punto estacionario:</b> punto en el que el gradiente de la superficie es nulo.</li>
+<li><b>Punto silla:</b> punto estacionario que no es máximo ni mínimo; la respuesta aumenta en una dirección y disminuye en otra.</li>
+<li><b>Termómetro de globo:</b> esfera negra con sensor interno que integra la radiación del entorno para estimar la temperatura radiante media (ISO 7726, 1998).</li></ul>
+
+<h2 class="s" id="s6">VI. Metodología</h2>
+<h3>6.1. Enfoque, tipo, nivel y diseño</h3>
+<p>La investigación tiene enfoque <b>cuantitativo</b>, es de tipo <b>aplicada</b> y de nivel <b>explicativo</b>. El diseño es <b>no experimental, longitudinal</b>
+(mediciones de campo repetidas en el tiempo sobre el sistema en operación), con análisis mediante la metodología de superficie de respuesta.</p>
+<h3>6.2. Población y muestra</h3>
+<p>La población está constituida por todas las condiciones de operación del sistema de piso radiante durante el período de estudio. La muestra comprende
+945 registros con el sistema en funcionamiento (con temperatura de agua registrada), tomados cada 5 min en tres franjas diarias durante dos semanas
+(muestreo no probabilístico por conveniencia temporal). Algunas fechas del archivo fuente aparecen con el mes «08» en lugar de «09»
+(13/08 y 23/08), lo que corresponde a errores de transcripción que no afectan el análisis.</p>
+<h3>6.3. Técnicas e instrumentos</h3>
+<p>Se aplicó la técnica de <b>observación sistemática con medición instrumental</b>, y los datos se registraron en fichas de registro digitales (hojas de cálculo).</p>
+<div class="tbl"><p class="cap"><b>Tabla 2.</b> Variables medidas e instrumentos.</p>
+<table><thead><tr><th class='l'>Ubicación</th><th class='l'>Variable</th><th class='l'>Instrumento</th></tr></thead><tbody>
+<tr><td class='l'>Circuito hidráulico</td><td class='l'>T de caldera, T de entrada y salida del agua (°C)</td><td class='l'>Sensores de temperatura</td></tr>
+<tr><td class='l'>Interior</td><td class='l'>T del aire, T radiante, T operativa (°C); HR (%)</td><td class='l'>Termohigrómetro con globo</td></tr>
+<tr><td class='l'>Interior</td><td class='l'>Velocidad del aire (m/s)</td><td class='l'>Anemómetro</td></tr>
+<tr><td class='l'>Piso</td><td class='l'>T superficial en centro, extremo y puerta (°C)</td><td class='l'>Termómetro de contacto</td></tr>
+<tr><td class='l'>Exterior</td><td class='l'>T del aire, T radiante, T operativa (°C); HR (%)</td><td class='l'>Termohigrómetro con globo</td></tr>
+</tbody></table></div>
+<h3>6.4. Procedimiento</h3><p>El estudio se realizó en un ambiente experimental equipado con un sistema hidrónico de calefacción por piso radiante, compuesto por
+una caldera de agua caliente, un circuito de tuberías embebido en la losa y puntos de medición de temperatura en la entrada y la
+salida del circuito. Las mediciones se efectuaron durante dos semanas consecutivas (del 11 al 25 de septiembre de 2026) en tres
+franjas diarias: mañana (05:00–07:00 h), tarde (12:30–14:30 h) y noche (20:00–22:00 h), con registros a intervalos de 5 min.</p>
+<p>En el interior se empleó un termohigrómetro con termómetro de globo, conforme a los principios de ISO 7726 (1998), que registró la
+temperatura del aire, la temperatura radiante, la temperatura operativa y la humedad relativa; además, se midió la velocidad del aire
+con anemómetro y la temperatura superficial del piso en tres puntos (centro, extremo y puerta). En el exterior se registraron la
+temperatura del aire, la temperatura radiante y la humedad relativa con un segundo termohigrómetro de globo. Dado que la velocidad del
+aire interior fue nula en todos los registros (&lt; 0.2 m/s), la temperatura operativa se calculó como la media aritmética de la
+temperatura del aire y la temperatura radiante media (ISO 7730, 2005).</p>
+<h3>6.5. Técnicas de procesamiento y análisis de datos</h3>
+<p>Se seleccionaron dos factores: <i>T</i><sub>w</sub> (factor controlable) y <i>T</i><sub>e</sub> (factor ambiental), y como respuesta la
+<i>T</i><sub>op</sub> interior. Se conservaron únicamente los registros con el sistema en funcionamiento (con temperatura de agua
+registrada), lo que dio una muestra de n = 945 observaciones. Los factores se codificaron en el intervalo [−1, 1] mediante</p>
+<div class="eq"><span><i>x<sub>i</sub></i> = (<i>T<sub>i</sub></i> − <i>T<sub>i</sub></i><sup>c</sup>) / (Δ<i>T<sub>i</sub></i>/2)</span><span class="num">(1)</span></div>
+<p>donde <i>T<sub>i</sub></i><sup>c</sup> es el centro del rango observado y Δ<i>T<sub>i</sub></i>/2 su semirrango (Tabla 3). Se ajustó el modelo de segundo orden</p>
+<div class="eq"><span><i>y</i> = <i>β</i><sub>0</sub> + <i>β</i><sub>1</sub><i>x</i><sub>1</sub> + <i>β</i><sub>2</sub><i>x</i><sub>2</sub> + <i>β</i><sub>11</sub><i>x</i><sub>1</sub><sup>2</sup> + <i>β</i><sub>22</sub><i>x</i><sub>2</sub><sup>2</sup> + <i>β</i><sub>12</sub><i>x</i><sub>1</sub><i>x</i><sub>2</sub> + <i>ε</i></span><span class="num">(2)</span></div>
+<p>por mínimos cuadrados ordinarios, <b>β̂</b> = (<b>X</b>′<b>X</b>)<sup>−1</sup><b>X</b>′<b>y</b>, con <b>X</b> = [1, <i>x</i><sub>1</sub>, <i>x</i><sub>2</sub>,
+<i>x</i><sub>1</sub><sup>2</sup>, <i>x</i><sub>2</sub><sup>2</sup>, <i>x</i><sub>1</sub><i>x</i><sub>2</sub>]. La significancia global se evaluó con ANOVA
+(prueba <i>F</i>) y la de cada coeficiente con la prueba <i>t</i> (α = 0.05). Para el análisis canónico, el modelo se expresó en forma matricial</p>
+<div class="eq"><span><i>ŷ</i> = <i>β̂</i><sub>0</sub> + <b>x</b>′<b>b</b> + <b>x</b>′<b>B</b><b>x</b>,&nbsp;&nbsp; <b>b</b> = [<i>β̂</i><sub>1</sub>, <i>β̂</i><sub>2</sub>]′,&nbsp;&nbsp; <b>B</b> = [<i>β̂</i><sub>11</sub>, <i>β̂</i><sub>12</sub>/2; <i>β̂</i><sub>12</sub>/2, <i>β̂</i><sub>22</sub>]</span><span class="num">(3)</span></div>
+<p>y el punto estacionario se obtuvo igualando el gradiente a cero (Myers et al., 2016):</p>
+<div class="eq"><span><b>x</b><sub>s</sub> = −½ <b>B</b><sup>−1</sup><b>b</b>,&nbsp;&nbsp;&nbsp; <i>ŷ</i><sub>s</sub> = <i>β̂</i><sub>0</sub> + ½ <b>x</b><sub>s</sub>′<b>b</b></span><span class="num">(4)</span></div>
+<p>Su naturaleza se determinó por el signo de los valores propios de <b>B</b>: todos negativos (máximo), todos positivos (mínimo) o de
+signo mixto (punto silla). Como el punto estacionario puede caer fuera de la región observada, se buscó además el máximo de
+<i>ŷ</i> sobre una malla de 201 × 201 puntos en −1 ≤ <i>x<sub>i</sub></i> ≤ 1 y los resultados se decodificaron con
+<i>T<sub>i</sub></i> = <i>T<sub>i</sub></i><sup>c</sup> + (Δ<i>T<sub>i</sub></i>/2)<i>x<sub>i</sub></i>.</p>
+<p>La adecuación del modelo se verificó mediante <i>R</i><sup>2</sup>, <i>R</i><sup>2</sup> ajustado, <i>R</i><sup>2</sup> de predicción (estadístico
+PRESS), raíz del error cuadrático medio (RMSE) y análisis de residuos: normalidad (Kolmogórov–Smirnov y Anderson–Darling; Anderson &amp;
+Darling, 1954), homocedasticidad (residuos frente a valores predichos) e independencia (Durbin &amp; Watson, 1950). Los cálculos se realizaron
+en GNU Octave (Eaton et al., 2020) y se verificaron de forma independiente en Python (NumPy, SciPy).</p>
+<div class="tbl"><p class="cap"><b>Tabla 3.</b> Factores, niveles observados y codificación.</p>
+<table><thead><tr><th>Factor</th><th class='l'>Variable real</th><th>Mín. (−1)</th><th>Centro (0)</th><th>Máx. (+1)</th><th class='l'>Codificación</th></tr></thead><tbody>
+<tr><td><i>x</i><sub>1</sub></td><td class='l'>Temperatura de entrada del agua, <i>T</i><sub>w</sub> (°C)</td><td>11.9</td><td>30.00</td><td>48.1</td><td class='l'><i>x</i><sub>1</sub> = (<i>T</i><sub>w</sub> − 30.0)/18.1</td></tr>
+<tr><td><i>x</i><sub>2</sub></td><td class='l'>Temperatura del aire exterior, <i>T</i><sub>e</sub> (°C)</td><td>−5.3</td><td>5.00</td><td>15.3</td><td class='l'><i>x</i><sub>2</sub> = (<i>T</i><sub>e</sub> − 5.0)/10.3</td></tr>
+<tr><td><i>y</i></td><td class='l'>Temperatura operativa interior, <i>T</i><sub>op</sub> (°C)</td><td colspan="3">5.7 – 20.2 (respuesta)</td><td class='l'>—</td></tr>
+</tbody></table></div>
+<p>Los pasos implementados en el script <code>superficie_respuesta.m</code> (Anexo B) fueron: (1) lectura de datos; (2) codificación; (3) construcción de la
+matriz <b>X</b> y estimación de coeficientes; (4) forma matricial; (5) cálculo del punto estacionario; (6) valores propios de <b>B</b>; (7) decodificación;
+(8) búsqueda de la mejor condición en la región; y (9) elaboración de gráficos.</p>
+
+<h2 class="s" id="s7">VII. Resultados</h2>
+<h3>7.1. Análisis descriptivo</h3>
+<p>La Tabla 4 resume las variables analizadas. La temperatura de entrada del agua varió entre 11.9 y 48.1 °C (media
+29.72 °C) y la temperatura exterior entre −5.3 y 15.3 °C (media 6.52 °C), lo que refleja una
+amplitud térmica exterior de más de 20 °C. La temperatura operativa interior osciló entre 5.7 y 20.2 °C, con media de
+14.06 °C; solo el 5.8 % de los registros superó 18 °C y el 0.63 % alcanzó
+20 °C. La correlación entre los factores fue despreciable (<i>r</i> = 0.059; VIF = 1.004), de modo que sus efectos pueden
+estimarse de manera independiente. La <i>T</i><sub>op</sub> se correlacionó más con <i>T</i><sub>e</sub> (<i>r</i> = 0.833) que
+con <i>T</i><sub>w</sub> (<i>r</i> = 0.438).</p>
+<p>Por franja horaria (Tabla 5; Figura 1), las condiciones más desfavorables se presentaron en la mañana, con
+<i>T</i><sub>e</sub> media de 1.57 °C y <i>T</i><sub>op</sub> de 11.39 °C, mientras que en la tarde,
+con mayor temperatura exterior y ganancia solar, la <i>T</i><sub>op</sub> media llegó a 16.66 °C. La segunda semana
+presentó una <i>T</i><sub>op</sub> media ligeramente superior (14.34 °C frente a 13.74 °C).</p>
+<div class="tbl"><p class="cap"><b>Tabla 4.</b> Estadística descriptiva de las variables (n = 945).</p>
+<table><thead><tr><th class='l'>Variable</th><th>Media</th><th>DE</th><th>Mín.</th><th>Q1</th><th>Mediana</th><th>Q3</th><th>Máx.</th></tr></thead><tbody>
+<tr><td class='l'><i>T</i><sub>w</sub>, entrada de agua (°C)</td><td>29.72</td><td>9.55</td><td>11.9</td><td>23.4</td><td>31.7</td><td>36.8</td><td>48.1</td></tr><tr><td class='l'><i>T</i><sub>e</sub>, aire exterior (°C)</td><td>6.52</td><td>5.10</td><td>−5.3</td><td>2.3</td><td>6.2</td><td>11.6</td><td>15.3</td></tr><tr><td class='l'><i>T</i><sub>op</sub>, operativa interior (°C)</td><td>14.06</td><td>2.58</td><td>5.7</td><td>12.2</td><td>14.0</td><td>16.0</td><td>20.2</td></tr></tbody></table></div>
+<div class="tbl"><p class="cap"><b>Tabla 5.</b> Media ± desviación estándar por franja horaria de medición.</p>
+<table><thead><tr><th class='l'>Franja</th><th>Horario</th><th>n</th><th><i>T</i><sub>w</sub> (°C)</th><th><i>T</i><sub>e</sub> (°C)</th><th><i>T</i><sub>op</sub> (°C)</th></tr></thead><tbody>
+<tr><td class='l'>Mañana</td><td>05:00–07:00</td><td>315</td><td>26.60 ± 8.68</td><td>1.57 ± 2.97</td><td>11.39 ± 1.40</td></tr><tr><td class='l'>Tarde</td><td>12:30–14:30</td><td>315</td><td>31.79 ± 9.57</td><td>12.51 ± 1.30</td><td>16.66 ± 1.60</td></tr><tr><td class='l'>Noche</td><td>20:00–22:00</td><td>315</td><td>30.77 ± 9.58</td><td>5.47 ± 2.47</td><td>14.13 ± 1.21</td></tr></tbody></table></div>
+<figure><img src="../figuras/fig5_horarios.png" style="width:92%"><p class="cap"><b>Figura 1.</b> Distribución de <i>T</i><sub>w</sub>, <i>T</i><sub>e</sub> y <i>T</i><sub>op</sub> por franja horaria.</p></figure>
+<h3>7.2. Modelo de segundo orden y ANOVA</h3>
+<p>Los coeficientes estimados se muestran en la Tabla 6. El modelo ajustado en variables codificadas es</p>
+<div class="eq"><span><i>ŷ</i> = 13.3922 + 1.9785<i>x</i><sub>1</sub> + 4.0837<i>x</i><sub>2</sub> − 0.1670<i>x</i><sub>1</sub><sup>2</sup> + 0.5762<i>x</i><sub>2</sub><sup>2</sup> − 0.5793<i>x</i><sub>1</sub><i>x</i><sub>2</sub></span><span class="num">(5)</span></div>
+<p>y, expresado en variables reales (°C),</p>
+<div class="eq" style="font-size:9.3pt"><span><i>T</i><sub>op</sub> = 7.341 + 0.1554<i>T</i><sub>w</sub> + 0.4354<i>T</i><sub>e</sub> − 0.00051<i>T</i><sub>w</sub><sup>2</sup> + 0.00543<i>T</i><sub>e</sub><sup>2</sup> − 0.00311<i>T</i><sub>w</sub><i>T</i><sub>e</sub></span><span class="num">(6)</span></div>
+<p>El ANOVA (Tabla 7) indica que la regresión es altamente significativa (<i>F</i><sub>0</sub> = 1084.20; <i>p</i> &lt; 0.001) y que el
+modelo explica el 85.24 % de la variabilidad de la <i>T</i><sub>op</sub>. Los términos de segundo orden, en conjunto, aportan una mejora
+significativa respecto del modelo de primer orden (<i>F</i> = 14.59; <i>p</i> &lt; 0.001), aunque modesta en magnitud
+(<i>R</i><sup>2</sup> de 0.8455 a 0.8524). Todos los coeficientes fueron significativos salvo <i>β</i><sub>11</sub>
+(<i>p</i> = 0.194), lo que indica que la respuesta varía de forma prácticamente lineal con <i>T</i><sub>w</sub> en el rango estudiado. En
+unidades físicas, en el centro de la región, un aumento de 1 °C en <i>T</i><sub>w</sub> eleva la <i>T</i><sub>op</sub> en
+0.109 °C, mientras que un aumento de 1 °C en <i>T</i><sub>e</sub> la eleva en 0.396 °C.</p>
+<div class="tbl"><p class="cap"><b>Tabla 6.</b> Coeficientes estimados del modelo de segundo orden (variables codificadas).</p>
+<table><thead><tr><th class='l'>Término</th><th>Coeficiente</th><th>Error est.</th><th><i>t</i></th><th>Valor <i>p</i></th><th>Signif. (α = 0.05)</th></tr></thead>
+<tbody><tr><td class='l'><i>β</i><sub>0</sub> (intercepto)</td><td>13.3922</td><td>0.0574</td><td>233.43</td><td>< 0.001</td><td>Sí</td></tr><tr><td class='l'><i>β</i><sub>1</sub> (<i>x</i><sub>1</sub>)</td><td>1.9785</td><td>0.0789</td><td>25.08</td><td>< 0.001</td><td>Sí</td></tr><tr><td class='l'><i>β</i><sub>2</sub> (<i>x</i><sub>2</sub>)</td><td>4.0837</td><td>0.0748</td><td>54.62</td><td>< 0.001</td><td>Sí</td></tr><tr><td class='l'><i>β</i><sub>11</sub> (<i>x</i><sub>1</sub><sup>2</sup>)</td><td>−0.1670</td><td>0.1285</td><td>−1.30</td><td>0.194</td><td>No</td></tr><tr><td class='l'><i>β</i><sub>22</sub> (<i>x</i><sub>2</sub><sup>2</sup>)</td><td>0.5762</td><td>0.1328</td><td>4.34</td><td>< 0.001</td><td>Sí</td></tr><tr><td class='l'><i>β</i><sub>12</sub> (<i>x</i><sub>1</sub><i>x</i><sub>2</sub>)</td><td>−0.5793</td><td>0.1346</td><td>−4.30</td><td>< 0.001</td><td>Sí</td></tr></tbody></table><p class="note">gl del error = 939. Estimación por mínimos cuadrados ordinarios.</p></div>
+<div class="tbl"><p class="cap"><b>Tabla 7.</b> Análisis de varianza (ANOVA) de la regresión.</p>
+<table><thead><tr><th class='l'>Fuente</th><th>gl</th><th>SC</th><th>CM</th><th><i>F</i><sub>0</sub></th><th>Valor <i>p</i></th></tr></thead>
+<tbody>
+<tr><td class='l'>Regresión</td><td>5</td><td>5342.315</td><td>1068.463</td><td>1084.20</td><td>< 0.001</td></tr>
+<tr><td class='l'>&nbsp;&nbsp;Lineal (<i>x</i><sub>1</sub>, <i>x</i><sub>2</sub>)</td><td>2</td><td>5299.174</td><td>2649.587</td><td>2688.62</td><td>&lt; 0.001</td></tr>
+<tr><td class='l'>&nbsp;&nbsp;Cuadrático + interacción</td><td>3</td><td>43.141</td><td>14.380</td><td>14.59</td><td>< 0.001</td></tr>
+<tr><td class='l'>Error residual</td><td>939</td><td>925.368</td><td>0.985</td><td></td><td></td></tr>
+<tr><td class='l'>Total</td><td>944</td><td>6267.683</td><td></td><td></td><td></td></tr>
+</tbody></table>
+<p class="note"><i>R</i><sup>2</sup> = 0.8524; <i>R</i><sup>2</sup><sub>aj</sub> = 0.8516; <i>R</i><sup>2</sup><sub>pred</sub> (PRESS) = 0.8504; RMSE = 0.993 °C; MAE = 0.778 °C.</p></div>
+<h3>7.3. Análisis canónico y región de operación</h3>
+<p>En forma matricial, <b>b</b> = [1.9785; 4.0837] y <b>B</b> = [−0.1670, −0.2897; −0.2897, 0.5762]. Los valores
+propios de <b>B</b> fueron <i>λ</i><sub>1</sub> = −0.2666 y <i>λ</i><sub>2</sub> = 0.6758; al tener signos opuestos, el punto
+estacionario <b>x</b><sub>s</sub> = (6.448; −0.302) es un <b>punto silla</b> (Tabla 8). Además, se encuentra fuera de la
+región experimental (|<i>x</i><sub>1,s</sub>| &gt; 1), pues su decodificación exige <i>T</i><sub>w</sub> = 146.7 °C, valor físicamente
+inviable para un piso radiante; por tanto, no constituye un óptimo operativo. La superficie (Figura 2) y el diagrama de contorno
+(Figura 3) muestran una respuesta creciente en ambas direcciones, sin máximo interior; la mejor condición se ubica en el vértice
+(<i>x</i><sub>1</sub>, <i>x</i><sub>2</sub>) = (1, 1), equivalente a <i>T</i><sub>w</sub> = 48.1 °C y <i>T</i><sub>e</sub> =
+15.3 °C, con <i>T</i><sub>op</sub> estimada de 19.28 °C.</p>
+<div class="tbl"><p class="cap"><b>Tabla 8.</b> Resultados del análisis canónico y de la búsqueda del óptimo.</p>
+<table><thead><tr><th class='l'>Indicador</th><th>Codificado</th><th>Real</th></tr></thead><tbody>
+<tr><td class='l'>Punto estacionario <i>x</i><sub>1,s</sub> (<i>T</i><sub>w</sub>)</td><td>6.448</td><td>146.7 °C</td></tr>
+<tr><td class='l'>Punto estacionario <i>x</i><sub>2,s</sub> (<i>T</i><sub>e</sub>)</td><td>−0.302</td><td>1.89 °C</td></tr>
+<tr><td class='l'>Respuesta estimada en el punto estacionario <i>ŷ</i><sub>s</sub></td><td colspan="2">19.15 °C</td></tr>
+<tr><td class='l'>Valores propios de <b>B</b> (<i>λ</i><sub>1</sub>, <i>λ</i><sub>2</sub>)</td><td colspan="2">−0.2666; 0.6758 → punto silla</td></tr>
+<tr><td class='l'>Mejor condición en la región (−1 ≤ <i>x<sub>i</sub></i> ≤ 1)</td><td>(1.00; 1.00)</td><td><i>T</i><sub>w</sub> = 48.1 °C; <i>T</i><sub>e</sub> = 15.3 °C</td></tr>
+<tr><td class='l'>Respuesta máxima estimada en la región</td><td colspan="2">19.28 °C</td></tr>
+</tbody></table></div>
+<figure><img src="../figuras/fig1_superficie.png" style="width:78%"><p class="cap"><b>Figura 2.</b> Superficie de respuesta ajustada de la temperatura operativa interior.</p></figure>
+<figure><img src="../figuras/fig2_contorno.png" style="width:76%"><p class="cap"><b>Figura 3.</b> Contornos de la temperatura operativa estimada (°C) y mejor condición dentro de la región (estrella).</p></figure>
+<h3>7.4. Adecuación del modelo</h3>
+<p>La Figura 4 compara los valores observados y predichos: los puntos se agrupan en torno a la recta 1:1 sin sesgo sistemático,
+con RMSE = 0.99 °C y MAE = 0.78 °C. El <i>R</i><sup>2</sup> de predicción (0.8504) es prácticamente igual al
+<i>R</i><sup>2</sup> ajustado, lo que descarta sobreajuste. El análisis de residuos (Figura 5; Tabla 9) muestra varianza aproximadamente
+constante y distribución cercana a la normal (KS: <i>p</i> = 0.300), con una ligera asimetría negativa (−0.39) atribuible a
+algunos registros de baja <i>T</i><sub>op</sub> al inicio de las sesiones matutinas. El estadístico de Durbin–Watson (DW = 0.52)
+revela autocorrelación positiva de los residuos, esperable en series temporales de un sistema con inercia térmica.</p>
+<p>La Figura 6 ilustra la interacción negativa (<i>β</i><sub>12</sub> = −0.579): la pendiente de la <i>T</i><sub>op</sub> respecto de
+<i>T</i><sub>w</sub> es de 0.141 °C/°C cuando el exterior está a −5.3 °C y se reduce a 0.077 °C/°C con
+15.3 °C. Ninguna combinación dentro de la región alcanza el rango de confort invernal de 20–24 °C.</p>
+<figure><img src="../figuras/fig3_obs_pred.png" style="width:55%"><p class="cap"><b>Figura 4.</b> Valores observados frente a predichos de la temperatura operativa.</p></figure>
+<figure><img src="../figuras/fig4_residuos.png" style="width:88%"><p class="cap"><b>Figura 5.</b> Diagnóstico de residuos: (a) residuos vs. predichos; (b) histograma; (c) Q–Q normal; (d) residuos en orden de registro.</p></figure>
+<div class="tbl"><p class="cap"><b>Tabla 9.</b> Diagnóstico de supuestos del modelo.</p>
+<table><thead><tr><th class='l'>Supuesto / prueba</th><th>Estadístico</th><th class='l'>Interpretación</th></tr></thead><tbody>
+<tr><td class='l'>Colinealidad (<i>r</i> entre <i>T</i><sub>w</sub> y <i>T</i><sub>e</sub>; VIF)</td><td>0.059; 1.004</td><td class='l'>Factores prácticamente ortogonales</td></tr>
+<tr><td class='l'>Normalidad: Kolmogórov–Smirnov</td><td>D = 0.031; <i>p</i> = 0.300</td><td class='l'>No se rechaza normalidad</td></tr>
+<tr><td class='l'>Normalidad: Anderson–Darling</td><td>A² = 0.964 (crít. 5 %: 0.751)</td><td class='l'>Desviación leve en colas</td></tr>
+<tr><td class='l'>Asimetría; curtosis en exceso</td><td>−0.387; 0.595</td><td class='l'>Cercanas a la normal</td></tr>
+<tr><td class='l'>Independencia: Durbin–Watson</td><td>DW = 0.516</td><td class='l'>Autocorrelación positiva (serie temporal)</td></tr>
+<tr><td class='l'>Capacidad predictiva (PRESS)</td><td><i>R</i><sup>2</sup><sub>pred</sub> = 0.8504</td><td class='l'>Sin sobreajuste (≈ <i>R</i><sup>2</sup><sub>aj</sub>)</td></tr>
+</tbody></table></div>
+<figure><img src="../figuras/fig6_interaccion.png" style="width:68%"><p class="cap"><b>Figura 6.</b> Efecto de <i>T</i><sub>w</sub> sobre la <i>T</i><sub>op</sub> para distintos niveles de <i>T</i><sub>e</sub>; banda verde: confort invernal.</p></figure>
+<h3>7.5. Contraste de hipótesis</h3>
+<div class="tbl"><p class="cap"><b>Tabla 10.</b> Resumen del contraste de hipótesis (α = 0.05).</p>
+<table><thead><tr><th class='l'>Hipótesis</th><th class='l'>Evidencia</th><th>Decisión</th></tr></thead><tbody>
+<tr><td class='l'>H<sub>E1</sub>: efectos significativos del modelo</td><td class='l'><i>F</i> = 1084.2, <i>p</i> &lt; 0.001; <i>β</i><sub>1</sub>, <i>β</i><sub>2</sub>, <i>β</i><sub>22</sub>, <i>β</i><sub>12</sub> con <i>p</i> &lt; 0.001; <i>β</i><sub>11</sub> con <i>p</i> = 0.194</td><td>Se acepta (se rechaza H<sub>0</sub>)</td></tr>
+<tr><td class='l'>H<sub>E2</sub>: máximo dentro de la región</td><td class='l'><i>λ</i><sub>1</sub> &lt; 0 &lt; <i>λ</i><sub>2</sub> → punto silla; <i>x</i><sub>1,s</sub> = 6.45 &gt; 1</td><td>Se rechaza</td></tr>
+<tr><td class='l'>H<sub>E3</sub>: <i>T</i><sub>op</sub> ≥ 20 °C en la región</td><td class='l'>Máximo estimado en la región = 19.28 °C</td><td>Se rechaza</td></tr>
+<tr><td class='l'>Hipótesis general</td><td class='l'><i>R</i><sup>2</sup> = 0.852; <i>R</i><sup>2</sup><sub>pred</sub> = 0.850; supuestos razonablemente satisfechos</td><td>Se acepta</td></tr>
+</tbody></table></div>
+
+<h2 class="s" id="s8">VIII. Discusión</h2><p>Los resultados muestran que la temperatura operativa interior está gobernada principalmente por la temperatura exterior, cuyo
+efecto codificado (<i>β</i><sub>2</sub> = 4.08) duplica al de la temperatura del agua (<i>β</i><sub>1</sub> = 1.98). Este hallazgo es
+coherente con un ambiente cuyas pérdidas por la envolvente son elevadas frente al aporte del piso, de modo que el balance térmico del
+recinto sigue de cerca las condiciones exteriores. El efecto positivo y casi lineal de <i>T</i><sub>w</sub> concuerda con la física del
+intercambio piso–ambiente, en el que el flujo de calor es aproximadamente proporcional a la diferencia entre la temperatura superficial
+y la operativa (Olesen, 2002; ISO 11855-1, 2021).</p>
+<p>La interacción negativa indica que elevar la temperatura del agua es más eficaz precisamente cuando más se necesita, es decir, en las
+horas frías. En horas cálidas la ganancia solar y la menor demanda reducen el beneficio marginal del agua caliente. Desde el punto de vista
+operativo, ello respalda estrategias de control con curva de compensación climática, en las que <i>T</i><sub>w</sub> se ajusta en función de
+<i>T</i><sub>e</sub>, recomendadas para sistemas de baja temperatura (Babiak et al., 2007).</p>
+<p>El análisis canónico identificó un punto silla fuera de la región, situación frecuente cuando los datos cubren una zona de la superficie
+alejada del óptimo (Myers et al., 2016; Montgomery, 2017). En estos casos, la recomendación metodológica es explorar en la dirección de máximo
+ascenso o analizar la cresta de la superficie; aquí, la dirección de mejora implica aumentar <i>T</i><sub>w</sub>, cuyo límite superior real
+está fijado por la temperatura superficial máxima admisible del piso (del orden de 29 °C en zonas ocupadas según ISO 11855-1). La temperatura
+superficial máxima medida en el centro del piso (≈ 29.7 °C) indica que el sistema ya opera cerca de ese límite, por lo que incrementar
+<i>T</i><sub>w</sub> no sería una solución adecuada.</p>
+<p>La <i>T</i><sub>op</sub> máxima estimada (19.3 °C) y la escasa proporción de registros ≥ 20 °C (0.63 %) muestran que el
+sistema no alcanza los niveles de confort de invierno recomendados por ISO 7730 (2005) y ASHRAE 55 (2020). Por ello, las mejoras deben orientarse
+a reducir pérdidas (aislamiento de la envolvente y del piso, hermeticidad) y a extender el tiempo de funcionamiento previo a las horas críticas,
+aprovechando la inercia de la losa.</p>
+<p>Entre las limitaciones del estudio destacan: (i) los datos provienen de mediciones de campo y no de un diseño experimental planificado
+(p. ej., central compuesto), por lo que la región explorada está determinada por las condiciones naturales; (ii) la autocorrelación de los
+residuos (DW = 0.52) implica que los errores estándar pueden estar subestimados y los valores <i>p</i> deben interpretarse con cautela,
+si bien la magnitud de los estadísticos <i>F</i> y <i>t</i> de los términos principales hace improbable que cambie la conclusión; (iii) no se
+incluyeron variables como radiación solar, caudal o retardos temporales asociados a la inercia de la losa; y (iv) el estudio corresponde a un
+único ambiente y a dos semanas de medición.</p>
+
+<h2 class="s" id="s9">IX. Conclusiones</h2><p>(1) Se obtuvo un modelo de superficie de respuesta de segundo orden que explica el 85.2 % de la variabilidad de la temperatura
+operativa interior (RMSE = 0.99 °C), con capacidad predictiva verificada (<i>R</i><sup>2</sup><sub>pred</sub> = 0.850).</p>
+<p>(2) La temperatura exterior es el factor de mayor influencia; la temperatura de entrada del agua tiene un efecto positivo, significativo y
+prácticamente lineal, y la interacción negativa entre ambas indica que el agua caliente es más eficaz en condiciones frías.</p>
+<p>(3) El punto estacionario es un punto silla situado fuera de la región experimental (<i>T</i><sub>w</sub> ≈ 147 °C), por lo que no representa un
+óptimo físicamente alcanzable. La mejor condición observada es <i>T</i><sub>w</sub> = 48.1 °C con <i>T</i><sub>e</sub> = 15.3 °C, que
+produce una <i>T</i><sub>op</sub> estimada de 19.3 °C.</p>
+<p>(4) En su configuración actual, el sistema no alcanza el umbral de confort invernal de 20 °C. Se recomiendan mejoras en la envolvente, un control con
+compensación climática y futuros estudios con diseño central compuesto, modelos con retardos temporales y variables adicionales como la radiación solar y el caudal.</p>
+
+<h2 class="s" id="s10">X. Recomendaciones</h2>
+<ol class="b">
+<li>Mejorar la envolvente del ambiente (aislamiento de muros, techo y bajo losa; hermeticidad de puertas y ventanas) para reducir la dependencia de la temperatura interior respecto de la exterior.</li>
+<li>Implementar un control de la caldera con curva de compensación climática que aumente <i>T</i><sub>w</sub> en las horas frías, donde su efecto es mayor.</li>
+<li>Encender el sistema con anticipación a la franja de la mañana para aprovechar la inercia térmica de la losa.</li>
+<li>No elevar la temperatura de entrada del agua por encima de los valores medidos sin verificar la temperatura superficial del piso, que ya se acerca al límite de confort de 29 °C.</li>
+<li>En futuras investigaciones, aplicar un diseño central compuesto con niveles controlados de <i>T</i><sub>w</sub>, incorporar variables como radiación solar y caudal, y emplear modelos con retardos temporales o errores autocorrelacionados.</li>
+</ol>
+
+<h2 class="s" id="ref">Referencias</h2><div class="refs"><p>American Society of Heating, Refrigerating and Air-Conditioning Engineers. (2020). <i>ANSI/ASHRAE Standard 55-2020: Thermal environmental conditions for human occupancy</i>. ASHRAE.</p><p>Anderson, T. W., &amp; Darling, D. A. (1954). A test of goodness of fit. <i>Journal of the American Statistical Association, 49</i>(268), 765–769.</p><p>Babiak, J., Olesen, B. W., &amp; Petráš, D. (2007). <i>Low temperature heating and high temperature cooling</i> (REHVA Guidebook No. 7). REHVA.</p><p>Bezerra, M. A., Santelli, R. E., Oliveira, E. P., Villar, L. S., &amp; Escaleira, L. A. (2008). Response surface methodology (RSM) as a tool for optimization in analytical chemistry. <i>Talanta, 76</i>(5), 965–977.</p><p>Box, G. E. P., &amp; Wilson, K. B. (1951). On the experimental attainment of optimum conditions. <i>Journal of the Royal Statistical Society: Series B, 13</i>(1), 1–45.</p><p>Durbin, J., &amp; Watson, G. S. (1950). Testing for serial correlation in least squares regression: I. <i>Biometrika, 37</i>(3–4), 409–428.</p><p>Eaton, J. W., Bateman, D., Hauberg, S., &amp; Wehbring, R. (2020). <i>GNU Octave version 6.1.0 manual: A high-level interactive language for numerical computations</i>.</p><p>Fanger, P. O. (1970). <i>Thermal comfort: Analysis and applications in environmental engineering</i>. Danish Technical Press.</p><p>International Organization for Standardization. (1998). <i>ISO 7726:1998 Ergonomics of the thermal environment — Instruments for measuring physical quantities</i>. ISO.</p><p>International Organization for Standardization. (2005). <i>ISO 7730:2005 Ergonomics of the thermal environment — Analytical determination and interpretation of thermal comfort using calculation of the PMV and PPD indices and local thermal comfort criteria</i>. ISO.</p><p>International Organization for Standardization. (2021). <i>ISO 11855-1:2021 Building environment design — Embedded radiant heating and cooling systems — Part 1: Definitions, symbols, and comfort criteria</i>. ISO.</p><p>Montgomery, D. C. (2017). <i>Design and analysis of experiments</i> (9th ed.). John Wiley &amp; Sons.</p><p>Myers, R. H., Montgomery, D. C., &amp; Anderson-Cook, C. M. (2016). <i>Response surface methodology: Process and product optimization using designed experiments</i> (4th ed.). John Wiley &amp; Sons.</p><p>Olesen, B. W. (2002). Radiant floor heating in theory and practice. <i>ASHRAE Journal, 44</i>(7).</p><p>Rhee, K.-N., &amp; Kim, K. W. (2015). A 50 year review of basic and applied research in radiant heating and cooling systems for the built environment. <i>Building and Environment, 91</i>, 166–190.</p></div>
+
+<h2 class="s" id="aA">Anexo A. Matriz de consistencia</h2>
+<table class="mc"><thead><tr><th>Problemas</th><th>Objetivos</th><th>Hipótesis</th><th>Variables</th><th>Metodología</th></tr></thead><tbody>
+<tr><td><b>General:</b> ¿Cómo influyen <i>T</i><sub>w</sub> y <i>T</i><sub>e</sub> en la <i>T</i><sub>op</sub> de un ambiente con piso radiante, modelada mediante MSR?</td>
+<td><b>General:</b> Modelar la <i>T</i><sub>op</sub> en función de <i>T</i><sub>w</sub> y <i>T</i><sub>e</sub> mediante la MSR.</td>
+<td><b>General:</b> <i>T</i><sub>w</sub> y <i>T</i><sub>e</sub> influyen significativamente en la <i>T</i><sub>op</sub> y la relación se representa con un modelo de 2.º orden.</td>
+<td rowspan="4"><b>VI<sub>1</sub>:</b> <i>T</i><sub>w</sub> (°C)<br><b>VI<sub>2</sub>:</b> <i>T</i><sub>e</sub> (°C)<br><b>VD:</b> <i>T</i><sub>op</sub> (°C)</td>
+<td rowspan="4"><b>Enfoque:</b> cuantitativo<br><b>Tipo:</b> aplicada<br><b>Nivel:</b> explicativo<br><b>Diseño:</b> no experimental longitudinal<br><b>Muestra:</b> 945 registros<br><b>Instrumentos:</b> termohigrómetro de globo, sensores de temperatura, anemómetro<br><b>Análisis:</b> MSR, ANOVA, análisis canónico (GNU Octave)</td></tr>
+<tr><td><b>PE1:</b> ¿Cuáles son los efectos lineales, cuadráticos y de interacción?</td><td><b>OE1:</b> Estimar y evaluar dichos efectos.</td><td><b>HE1:</b> Al menos un efecto es significativo.</td></tr>
+<tr><td><b>PE2:</b> ¿Qué naturaleza tiene el punto estacionario?</td><td><b>OE2:</b> Determinar su ubicación y naturaleza.</td><td><b>HE2:</b> Es un máximo dentro de la región.</td></tr>
+<tr><td><b>PE3:</b> ¿Cuál es la mejor condición y permite el confort?</td><td><b>OE3:</b> Identificar la mejor condición y contrastarla con el confort.</td><td><b>HE3:</b> Existe una condición con <i>T</i><sub>op</sub> ≥ 20 °C.</td></tr>
+</tbody></table>
+
+<h2 class="s" id="aB">Anexo B. Código fuente en GNU Octave</h2>
+<p>Script <code>superficie_respuesta.m</code>, que lee <code>datos/datos_MSR.csv</code> y genera los resultados y las figuras.</p>
+<pre>%% ========================================================================
+%  MÉTODO DE SUPERFICIE DE RESPUESTA - SISTEMA DE PISO RADIANTE
+%  Procedimiento: Montgomery, "Diseño y Análisis de Experimentos"
+%  Software: GNU Octave (no requiere paquetes adicionales)
+%
+%  x1 = Temperatura de entrada del agua al piso (°C)
+%  x2 = Temperatura del aire exterior (°C)
+%  y  = Temperatura operativa interior (°C)
+%
+%  Uso: abrir Octave en esta carpeta y ejecutar:  superficie_respuesta
+% =========================================================================
+clc; clear; close all;
+set(0, 'defaultfigurevisible', 'off');
+set(0, 'defaultaxesfontsize', 12, 'defaulttextfontsize', 12, 'defaultlinelinewidth', 1.5);
+if ~exist('figuras', 'dir'),    mkdir('figuras');    end
+if ~exist('resultados', 'dir'), mkdir('resultados'); end
+
+%% 1) LEER DATOS (variables reales)
+D  = dlmread(fullfile('datos', 'datos_MSR.csv'), ',', 1, 0);   % salta encabezado
+T1 = D(:,1);   T2 = D(:,2);   y = D(:,3);
+n  = numel(y);
+
+%% 2) CODIFICAR VARIABLES:  x = (T - centro) / (DeltaT/2)
+c1 = (max(T1) + min(T1))/2;   h1 = (max(T1) - min(T1))/2;
+c2 = (max(T2) + min(T2))/2;   h2 = (max(T2) - min(T2))/2;
+x1 = (T1 - c1)/h1;
+x2 = (T2 - c2)/h2;
+
+%% 3) MATRIZ DEL MODELO DE 2° ORDEN Y COEFICIENTES:  X\y
+X    = [ones(n,1) x1 x2 x1.^2 x2.^2 x1.*x2];
+coef = X\y;                                    % [b0 b1 b2 b11 b22 b12]
+b0 = coef(1); b1 = coef(2); b2 = coef(3);
+b11 = coef(4); b22 = coef(5); b12 = coef(6);
+
+yhat = X*coef;
+res  = y - yhat;
+p    = numel(coef);
+SST  = sum((y - mean(y)).^2);
+SSE  = sum(res.^2);
+SSR  = SST - SSE;
+R2   = 1 - SSE/SST;
+R2a  = 1 - (SSE/(n-p))/(SST/(n-1));
+MSE  = SSE/(n-p);
+F    = (SSR/(p-1))/MSE;
+pF   = betainc((n-p)/((n-p) + (p-1)*F), (n-p)/2, (p-1)/2);   % p-valor F (sin paquetes)
+
+% Significancia de cada coeficiente (prueba t)
+se = sqrt(diag(MSE*inv(X'*X)));
+t  = coef./se;
+pt = betainc((n-p)./((n-p) + t.^2), (n-p)/2, 0.5);           % p-valor t bilateral
+
+%% 4) FORMA MATRICIAL:  y = b0 + x'b + x'Bx
+b = [b1; b2];
+B = [b11 b12/2; b12/2 b22];
+
+%% 5) PUNTO ESTACIONARIO:  dy/dx = b + 2Bx = 0  -&gt;  xs = -1/2 * inv(B) * b
+xs = -0.5*inv(B)*b;
+ys = b0 + 0.5*xs'*b;
+
+%% 6) NATURALEZA DEL PUNTO (eigenvalores de B)
+lambda = eig(B);
+if all(lambda &lt; 0),     tipo = 'MAXIMO';
+elseif all(lambda &gt; 0), tipo = 'MINIMO';
+else,                   tipo = 'PUNTO SILLA';
+end
+dentro = all(abs(xs) &lt;= 1);
+
+%% 7) DECODIFICAR A VARIABLES REALES:  T = centro + (DeltaT/2)*x
+T1s = c1 + h1*xs(1);
+T2s = c2 + h2*xs(2);
+
+%% 8) MEJOR CONDICIÓN DENTRO DE LA REGIÓN EXPERIMENTAL (-1 &lt;= x &lt;= 1)
+[g1, g2] = meshgrid(linspace(-1, 1, 201));
+G = b0 + b1*g1 + b2*g2 + b11*g1.^2 + b22*g2.^2 + b12*g1.*g2;
+[ymax, k] = max(G(:));
+x1m = g1(k);  x2m = g2(k);
+
+%% 9) REPORTE EN PANTALLA Y EN ARCHIVO
+nombres = {'b0','b1 (x1)','b2 (x2)','b11 (x1^2)','b22 (x2^2)','b12 (x1x2)'};
+fid = fopen(fullfile('resultados', 'resultados.txt'), 'w');
+for f = [1 fid]
+  fprintf(f, '=== METODO DE SUPERFICIE DE RESPUESTA - PISO RADIANTE ===\n\n');
+  fprintf(f, 'Numero de observaciones: n = %d\n\n', n);
+  fprintf(f, 'CODIFICACION\n');
+  fprintf(f, '  x1 = (T_entrada - %.2f) / %.2f\n', c1, h1);
+  fprintf(f, '  x2 = (T_exterior - %.2f) / %.2f\n\n', c2, h2);
+  fprintf(f, 'COEFICIENTES (X\\y)\n');
+  fprintf(f, '  %-12s %10s %10s %10s %10s\n', 'Termino', 'Coef', 'Error est', 't', 'p-valor');
+  for i = 1:p
+    fprintf(f, '  %-12s %10.4f %10.4f %10.2f %10.4f\n', nombres{i}, coef(i), se(i), t(i), pt(i));
+  end
+  fprintf(f, '\nMODELO MATEMATICO (variables codificadas)\n');
+  fprintf(f, '  y = %.4f %+.4f x1 %+.4f x2 %+.4f x1^2 %+.4f x2^2 %+.4f x1x2\n\n', coef);
+  fprintf(f, 'ANOVA DE LA REGRESION\n');
+  fprintf(f, '  %-10s %6s %12s %12s %10s %10s\n', 'Fuente', 'gl', 'SC', 'CM', 'F', 'p-valor');
+  fprintf(f, '  %-10s %6d %12.3f %12.3f %10.2f %10.4f\n', 'Regresion', p-1, SSR, SSR/(p-1), F, pF);
+  fprintf(f, '  %-10s %6d %12.3f %12.3f\n', 'Error', n-p, SSE, MSE);
+  fprintf(f, '  %-10s %6d %12.3f\n', 'Total', n-1, SST);
+  fprintf(f, '  R^2 = %.4f   R^2 ajustado = %.4f\n\n', R2, R2a);
+  fprintf(f, 'FORMA MATRICIAL\n');
+  fprintf(f, '  b = [%.4f ; %.4f]\n', b);
+  fprintf(f, '  B = [%.4f  %.4f ; %.4f  %.4f]\n\n', B(1,1), B(1,2), B(2,1), B(2,2));
+  fprintf(f, 'PUNTO ESTACIONARIO  xs = -1/2 B^-1 b\n');
+  fprintf(f, '  x1s = %.4f   x2s = %.4f\n', xs);
+  fprintf(f, '  ys  = %.4f C\n', ys);
+  fprintf(f, '  Eigenvalores de B: %.4f  %.4f  -&gt;  %s\n', lambda, tipo);
+  if dentro
+    fprintf(f, '  El punto esta DENTRO de la region experimental.\n');
+  else
+    fprintf(f, '  El punto esta FUERA de la region experimental (|x| &gt; 1).\n');
+  end
+  fprintf(f, '  Decodificado: T_entrada = %.2f C   T_exterior = %.2f C\n\n', T1s, T2s);
+  fprintf(f, 'MEJOR CONDICION DENTRO DE LA REGION (-1 &lt;= x &lt;= 1)\n');
+  fprintf(f, '  x1 = %.2f -&gt; T_entrada = %.2f C\n', x1m, c1 + h1*x1m);
+  fprintf(f, '  x2 = %.2f -&gt; T_exterior = %.2f C\n', x2m, c2 + h2*x2m);
+  fprintf(f, '  y maxima estimada = %.2f C\n', ymax);
+end
+fclose(fid);
+
+%% 10) GRÁFICOS
+R1 = c1 + h1*g1;   R2g = c2 + h2*g2;
+
+% Superficie de respuesta
+figure;
+surf(R1, R2g, G, 'EdgeColor', 'none'); colormap(jet); colorbar; hold on;
+plot3(T1, T2, y, 'k.', 'MarkerSize', 4);
+xlabel('T entrada agua (°C)'); ylabel('T exterior (°C)'); zlabel('T operativa (°C)');
+title('Superficie de respuesta'); view(-35, 25); grid on;
+print('-dpng', '-r200', fullfile('figuras', '1_superficie.png'));
+
+% Contorno
+figure;
+[C, hc] = contourf(R1, R2g, G, floor(min(G(:))):1:ceil(max(G(:)))); colormap(jet); colorbar; hold on;
+clabel(C, hc, 'FontSize', 9);
+plot(T1, T2, 'k.', 'MarkerSize', 4);
+plot(c1 + h1*x1m, c2 + h2*x2m, 'wp', 'MarkerSize', 16, 'MarkerFaceColor', 'w');
+xlabel('T entrada agua (°C)'); ylabel('T aire exterior (°C)');
+title('Contorno de T operativa (°C)');
+print('-dpng', '-r200', fullfile('figuras', '2_contorno.png'));
+
+% Observado vs predicho
+figure;
+plot(y, yhat, 'b.', 'MarkerSize', 6); hold on;
+lim = [min([y; yhat]) max([y; yhat])];
+plot(lim, lim, 'r-', 'LineWidth', 2);
+xlabel('T operativa observada (°C)'); ylabel('T operativa predicha (°C)');
+title(sprintf('Observado vs predicho  (R^2 = %.3f)', R2)); grid on; axis equal; axis([lim lim]);
+print('-dpng', '-r200', fullfile('figuras', '3_observado_vs_predicho.png'));
+
+% Residuos
+figure;
+subplot(1,2,1);
+plot(yhat, res, 'b.', 'MarkerSize', 6); hold on; plot(xlim, [0 0], 'r-');
+xlabel('Valor predicho (°C)'); ylabel('Residuo (°C)'); title('Residuos vs predichos'); grid on;
+subplot(1,2,2);
+hist(res, 30); xlabel('Residuo (°C)'); ylabel('Frecuencia'); title('Histograma de residuos'); grid on;
+print('-dpng', '-r200', fullfile('figuras', '4_residuos.png'));
+
+disp(' ');
+disp('Listo: revisa las carpetas "resultados" y "figuras".');
+</pre>
+
+<h2 class="s" id="aC">Anexo C. Salida de resultados</h2>
+<p>Contenido del archivo <code>resultados/resultados.txt</code> generado por el script del Anexo B.</p>
+<pre>=== METODO DE SUPERFICIE DE RESPUESTA - PISO RADIANTE ===
+
+Numero de observaciones: n = 945
+
+CODIFICACION
+  x1 = (T_entrada - 30.00) / 18.10
+  x2 = (T_exterior - 5.00) / 10.30
+
+COEFICIENTES (X\y)
+  Termino            Coef  Error est          t    p-valor
+  b0              13.3922     0.0574     233.43     0.0000
+  b1 (x1)          1.9785     0.0789      25.08     0.0000
+  b2 (x2)          4.0837     0.0748      54.62     0.0000
+  b11 (x1^2)      -0.1670     0.1285      -1.30     0.1941
+  b22 (x2^2)       0.5762     0.1328       4.34     0.0000
+  b12 (x1x2)      -0.5793     0.1346      -4.30     0.0000
+
+MODELO MATEMATICO (variables codificadas)
+  y = 13.3922 +1.9785 x1 +4.0837 x2 -0.1670 x1^2 +0.5762 x2^2 -0.5793 x1x2
+
+ANOVA DE LA REGRESION
+  Fuente         gl           SC           CM          F    p-valor
+  Regresion       5     5342.315     1068.463    1084.20     0.0000
+  Error         939      925.368        0.985
+  Total         944     6267.683
+  R^2 = 0.8524   R^2 ajustado = 0.8516
+
+FORMA MATRICIAL
+  b = [1.9785 ; 4.0837]
+  B = [-0.1670  -0.2897 ; -0.2897  0.5762]
+
+PUNTO ESTACIONARIO  xs = -1/2 B^-1 b
+  x1s = 6.4480   x2s = -0.3020
+  ys  = 19.1545 C
+  Eigenvalores de B: -0.2666  0.6758  -&gt;  PUNTO SILLA
+  El punto esta FUERA de la region experimental (|x| &gt; 1).
+  Decodificado: T_entrada = 146.71 C   T_exterior = 1.89 C
+
+MEJOR CONDICION DENTRO DE LA REGION (-1 &lt;= x &lt;= 1)
+  x1 = 1.00 -&gt; T_entrada = 48.10 C
+  x2 = 1.00 -&gt; T_exterior = 15.30 C
+  y maxima estimada = 19.28 C
+</pre>
+</body></html>

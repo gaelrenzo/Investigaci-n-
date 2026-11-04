@@ -1,0 +1,42 @@
+=== METODO DE SUPERFICIE DE RESPUESTA - PISO RADIANTE ===
+
+Numero de observaciones: n = 945
+
+CODIFICACION
+  x1 = (T_entrada - 30.00) / 18.10
+  x2 = (T_exterior - 5.00) / 10.30
+
+COEFICIENTES (X\y)
+  Termino            Coef  Error est          t    p-valor
+  b0              13.3922     0.0574     233.43     0.0000
+  b1 (x1)          1.9785     0.0789      25.08     0.0000
+  b2 (x2)          4.0837     0.0748      54.62     0.0000
+  b11 (x1^2)      -0.1670     0.1285      -1.30     0.1941
+  b22 (x2^2)       0.5762     0.1328       4.34     0.0000
+  b12 (x1x2)      -0.5793     0.1346      -4.30     0.0000
+
+MODELO MATEMATICO (variables codificadas)
+  y = 13.3922 +1.9785 x1 +4.0837 x2 -0.1670 x1^2 +0.5762 x2^2 -0.5793 x1x2
+
+ANOVA DE LA REGRESION
+  Fuente         gl           SC           CM          F    p-valor
+  Regresion       5     5342.315     1068.463    1084.20     0.0000
+  Error         939      925.368        0.985
+  Total         944     6267.683
+  R^2 = 0.8524   R^2 ajustado = 0.8516
+
+FORMA MATRICIAL
+  b = [1.9785 ; 4.0837]
+  B = [-0.1670  -0.2897 ; -0.2897  0.5762]
+
+PUNTO ESTACIONARIO  xs = -1/2 B^-1 b
+  x1s = 6.4480   x2s = -0.3020
+  ys  = 19.1545 C
+  Eigenvalores de B: -0.2666  0.6758  ->  PUNTO SILLA
+  El punto esta FUERA de la region experimental (|x| > 1).
+  Decodificado: T_entrada = 146.71 C   T_exterior = 1.89 C
+
+MEJOR CONDICION DENTRO DE LA REGION (-1 <= x <= 1)
+  x1 = 1.00 -> T_entrada = 48.10 C
+  x2 = 1.00 -> T_exterior = 15.30 C
+  y maxima estimada = 19.28 C
