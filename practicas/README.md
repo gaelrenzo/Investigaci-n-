@@ -79,13 +79,14 @@ Las empresas eléctricas del Estado (Electro Puno, San Gabán, SEAL) aceptan **s
 - https://www.practicas.pe/convocatoria-practicas-pre-y-profesionales-minera-boroo-septiembre-2026-11480.html
 - https://mineriayproyectos.com/mineria/2026/09/29/volcan-practicas-profesionales-2027/
 
-## Correr el scraper en tu PC
+## Correr el scraper (probado contra las webs reales el 12-nov-2026)
 ```bash
-pip install requests beautifulsoup4
-python3 scraper_practicas.py --carrera "mecanica electrica|electrica|mecanica|energ" --solo-pagadas
+python3 -m venv ~/.venvs/practicas          # en la sdcard no se puede (no admite symlinks)
+~/.venvs/practicas/bin/pip install requests beautifulsoup4
+~/.venvs/practicas/bin/python scraper_practicas.py \
+    --carrera "mecanica electrica|electrica|mecanica|mecatronica|energ" --solo-pagadas
 ```
-Revisa practicas.pe, perutrabajos, convocatoriasdetrabajo, Computrabajo y Bumeran por región (Puno → Arequipa → norte).
-Descarta los avisos que piden egresado o bachiller y los que cierran después de agosto 2027.
-Saca `practicas_resultados.csv` y `.md` ordenados por región, pago y fecha de cierre.
-Opciones: `--incluir-cerradas` y `--pausa 2` (más lento, para no saturar las webs).
-Nota: no pude probarlo contra las webs reales por el bloqueo de red; si alguna fuente devuelve 0 avisos, avísame y ajusto el parser.
+- Salida automática: `practicas_auto.csv` y `.md`. Tabla curada a mano: **`practicas_resultados.md` / `.csv`**.
+- Opciones: `-v` (muestra por qué descarta cada aviso), `--regiones "Puno,Arequipa"`, `--incluir-cerradas`, `--pausa 1`.
+- Fuentes que lee: practicas.pe (por región y por carrera), perutrabajos (con paginación), convocatoriasdetrabajo (por región y por carrera), Computrabajo (con sesión y Referer) y gob.pe/electropuno.
+- **Bumeran** (SPA en JS) y **LinkedIn** (login) no se pueden leer con requests, así que no están incluidas. Talento Perú (formulario JSF) tampoco; convocatoriasdetrabajo replica sus avisos.
